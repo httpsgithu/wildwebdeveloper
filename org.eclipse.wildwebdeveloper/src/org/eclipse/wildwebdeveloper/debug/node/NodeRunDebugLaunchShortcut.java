@@ -12,36 +12,18 @@
  *******************************************************************************/
 package org.eclipse.wildwebdeveloper.debug.node;
 
-import java.io.File;
 import java.util.Arrays;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.wildwebdeveloper.Activator;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.wildwebdeveloper.debug.AbstractDebugAdapterLaunchShortcut;
 
 public class NodeRunDebugLaunchShortcut extends AbstractDebugAdapterLaunchShortcut {
 
 	public NodeRunDebugLaunchShortcut() {
 		super(NodeRunDAPDebugDelegate.ID, new String[] {"org.eclipse.wildwebdeveloper.js", "org.eclipse.wildwebdeveloper.ts"}, true);
-	}
-
-	@Override public void configureLaunchConfiguration(File file, ILaunchConfigurationWorkingCopy wc) {
-		wc.setAttribute(NodeRunDAPDebugDelegate.PROGRAM, file.getAbsolutePath());
-	}
-
-	@Override public boolean match(ILaunchConfiguration launchConfig, File selectedFile) {
-		try {
-			return launchConfig.getAttribute(NodeRunDAPDebugDelegate.PROGRAM, "").equals(selectedFile.getAbsolutePath()); //$NON-NLS-1$
-		} catch (CoreException e) {
-			Activator.getDefault().getLog().log(e.getStatus());
-			return false;
-		}
 	}
 
 	@Override
@@ -55,7 +37,7 @@ public class NodeRunDebugLaunchShortcut extends AbstractDebugAdapterLaunchShortc
 				return jsFiles[0];
 			}
 		} catch (CoreException e) {
-			Activator.getDefault().getLog().log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(), e));
+			ILog.get().error(e.getMessage(), e);
 		}
 		return null;
 		

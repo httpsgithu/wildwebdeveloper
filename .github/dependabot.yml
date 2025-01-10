@@ -1,0 +1,59 @@
+version: 2
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: daily
+- package-ecosystem: npm
+  directory: "/org.eclipse.wildwebdeveloper"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  groups:
+    vue:
+      patterns:
+      - "@vue/*"
+    vscode-languageservices:
+      patterns:
+      - "vscode-*-languageservice"
+- package-ecosystem: npm
+  directory: "/org.eclipse.wildwebdeveloper.tests/testProjects/angular-app"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  groups:
+    angular:
+      patterns:
+      - "@angular-devkit/*"
+      - "@angular/*"
+- package-ecosystem: npm
+  directory: "/org.eclipse.wildwebdeveloper.tests/testProjects/HelloWorldTS"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+- package-ecosystem: npm
+  directory: "/org.eclipse.wildwebdeveloper.tests/testProjects/eslint"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  groups:
+    typescript-eslint:
+      patterns:
+      - "@typescript-eslint/*"
+- package-ecosystem: npm
+  directory: "/org.eclipse.wildwebdeveloper.tests/testProjects/vue-app"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  groups:
+    babel:
+      patterns:
+      - "@babel/*"
+    vue:
+      patterns:
+      - "@vue/*"  

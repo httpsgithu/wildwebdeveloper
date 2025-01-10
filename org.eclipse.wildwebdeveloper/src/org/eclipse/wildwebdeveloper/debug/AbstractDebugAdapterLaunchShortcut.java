@@ -14,6 +14,8 @@ package org.eclipse.wildwebdeveloper.debug;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -21,9 +23,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
@@ -41,7 +43,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.FileEditorInput;
-import org.eclipse.wildwebdeveloper.Activator;
 
 public abstract class AbstractDebugAdapterLaunchShortcut implements ILaunchShortcut2 {
 
@@ -50,11 +51,11 @@ public abstract class AbstractDebugAdapterLaunchShortcut implements ILaunchShort
 	private final ILaunchConfigurationType configType;
 	private final boolean autoStartNewlyCreatedConfiguration;
 
-	public AbstractDebugAdapterLaunchShortcut(String launchConfigTypeId, String contentTypeId, boolean autoStartNewlyCreatedConfiguration) {
+	protected AbstractDebugAdapterLaunchShortcut(String launchConfigTypeId, String contentTypeId, boolean autoStartNewlyCreatedConfiguration) {
 		this(launchConfigTypeId, new String[] {contentTypeId}, autoStartNewlyCreatedConfiguration);
 	}
 
-	public AbstractDebugAdapterLaunchShortcut(String launchConfigTypeId, String[] contentTypeIds, boolean autoStartNewlyCreatedConfiguration) {
+	protected AbstractDebugAdapterLaunchShortcut(String launchConfigTypeId, String[] contentTypeIds, boolean autoStartNewlyCreatedConfiguration) {
 		this.autoStartNewlyCreatedConfiguration = autoStartNewlyCreatedConfiguration;
 		this.contentTypeIds = contentTypeIds;
 		this.configType = launchManager.getLaunchConfigurationType(launchConfigTypeId);
@@ -95,8 +96,7 @@ public abstract class AbstractDebugAdapterLaunchShortcut implements ILaunchShort
 
 	@Override
 	public IResource getLaunchableResource(ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+		if (selection instanceof IStructuredSelection structuredSelection) {
 			if (structuredSelection.size() != 1) {
 				return null;
 			}
@@ -161,7 +161,7 @@ public abstract class AbstractDebugAdapterLaunchShortcut implements ILaunchShort
 					}
 				});
 			} catch (CoreException e) {
-				Activator.getDefault().getLog().log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(), e));
+				ILog.get().error(e.getMessage(), e);
 			}
 		} else if (configurations.length == 1) {
 			Display.getDefault().asyncExec(() -> DebugUITools.launch(configurations[0], mode));
@@ -193,7 +193,7 @@ public abstract class AbstractDebugAdapterLaunchShortcut implements ILaunchShort
 			return new ILaunchConfiguration[0];
 		} catch (CoreException e) {
 			ErrorDialog.openError(Display.getDefault().getActiveShell(), "error", e.getMessage(), e.getStatus()); //$NON-NLS-1$
-			Activator.getDefault().getLog().log(e.getStatus());
+			ILog.get().log(e.getStatus());
 		}
 		return new ILaunchConfiguration[0];
 	}
@@ -214,12 +214,34 @@ public abstract class AbstractDebugAdapterLaunchShortcut implements ILaunchShort
 	 * @param file
 	 * @param wc
 	 */
-	public abstract void configureLaunchConfiguration(File file, ILaunchConfigurationWorkingCopy wc);
+	protected void configureLaunchConfiguration(File file, ILaunchConfigurationWorkingCopy wc) {
+		IFile iFile = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(file.getAbsolutePath()));
+		wc.setAttribute(LaunchConstants.PROGRAM, iFile == null ? file.getAbsolutePath() : "${workspace_loc:" + iFile.getFullPath() + "}");
+		wc.setAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, file.getParentFile().getAbsolutePath());
+	}
 
 	/**
 	 * @param launchConfig
 	 * @param selectedFile
 	 * @return whether the launchConfig is related to the selectedFile
 	 */
-	public abstract boolean match(ILaunchConfiguration launchConfig, File selectedFile);
+	private boolean match(ILaunchConfiguration launchConfig, File selectedFile) {
+		try {
+			String program = launchConfig.getAttribute(LaunchConstants.PROGRAM, "");
+			Set<String> validValues = new HashSet<>();
+			validValues.add(selectedFile.getAbsolutePath());
+			IFile iFile = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(selectedFile.getAbsolutePath()));
+			if (iFile != null) {
+				validValues.add("${workspace_loc:" + iFile.getFullPath() + '}');
+				validValues.add("${workspace_loc:" + iFile.getProject().getName() + "}/" + iFile.getProjectRelativePath());
+				validValues.add("${workspace_loc:/" + iFile.getProject().getName() + "}/" + iFile.getProjectRelativePath());
+				// we can actually also include variations for each segment, although it's not usual
+			}
+			return validValues.contains(program);
+		} catch (CoreException e) {
+			ILog.get().log(e.getStatus());
+			return false;
+		}
+	}
+
 }

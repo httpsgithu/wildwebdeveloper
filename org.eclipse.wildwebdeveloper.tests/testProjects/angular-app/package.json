@@ -11,19 +11,24 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "~8.1.1",
-    "@angular/cli": "^8.1.1",
-    "@angular/common": "~8.1.1",
-    "@angular/compiler": "~8.1.1",
-    "@angular/core": "~8.1.1",
-    "@angular/forms": "~8.1.1",
-    "@angular/platform-browser": "~8.1.1",
-    "@angular/platform-browser-dynamic": "~8.1.1",
-    "@angular/router": "~8.1.1",
-    "@angular-devkit/build-angular": "0.801.1",
-    "core-js": "^2.5.4",
-    "rxjs": "~6.4.0",
-    "tslib": "^1.9.0",
-    "zone.js": "~0.9.1"
+    "@angular-devkit/build-angular": "^19.0.6",
+    "@angular/animations": "^19.0.0",
+    "@angular/cli": "^19.0.6",
+    "@angular/common": "^19.0.0",
+    "@angular/compiler": "^19.0.0",
+    "@angular/core": "^19.0.0",
+    "@angular/forms": "^19.0.5",
+    "@angular/platform-browser": "^19.0.0",
+    "@angular/platform-browser-dynamic": "^19.0.5",
+    "@angular/router": "^19.0.5",
+    "core-js": "^3.39.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.4.0",
+    "zone.js": "^0.15.0"
+  },
+  "overrides": {
+    "zone.js": "^0.15.0",
+    "cross-spawn": "^7.0.5",
+    "http-proxy-middleware": "^3.0.0"
   }
 }

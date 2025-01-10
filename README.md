@@ -12,7 +12,7 @@ Rich 🖊️edition for:
 * TypeScript
 * JSON (including schema support)
 * YAML (including schema support, Kubernetes schema built-in)
-* XML (including schema support), XSL, XSD, DTD
+* XML (including schema support), XSL, XSD, DTD, RelaxNG
 
 and
 
@@ -20,6 +20,7 @@ and
 * Angular (Components & Templates, in TypeScript and HTML files)
 * React (JSX, TSX, embedded HTML)
 * ESLint (for JavaScript and TypeScript)
+* Vue.js
 
 Supported features for edition are
 
@@ -43,20 +44,14 @@ Supported 🦟🔫 debugging targets
 
 ## 📥 Get it Now!
 
-### As full IDE package
-
-Get an Eclipse IDE for JavaScript and Web developers: download from [https://download.eclipse.org/wildwebdeveloper/releases/latest/IDEs](https://download.eclipse.org/wildwebdeveloper/releases/latest/IDEs) , unpack and run.
-
-### As extension into an existing Eclipse IDE installation
-
-* With Eclipse Marketplace Client and https://marketplace.eclipse.org/content/wild-web-developer-web-development-eclipse-ide-experimental, choose one of:
-  * Click [here](https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=3394048) to install
+* With Eclipse Marketplace Client and https://marketplace.eclipse.org/content/wild-web-developer-html-css-javascript-typescript-nodejs-angular-json-yaml-kubernetes-xml, choose one of:
+  * [Click here to install](https://mickaelistria.github.io/redirctToEclipseIDECloneCommand/redirectToMarketplace.html?entryId=5578890)
   * *Help > Eclipse Marketplace*, search `Wild Web Developer` then click `Install` or
-  * drag <a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=3394048" class="drag" title="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client"><img class="img-responsive" src="https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.png" alt="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client" /></a> into Eclipse IDE
+  * drag <a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=5578890" class="drag" title="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client"><img class="img-responsive" src="https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.png" alt="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client" /></a> into Eclipse IDE
 
 or
 
-* With [Help > Install New Software...](http://help.eclipse.org/neon/index.jsp?topic=%2Forg.eclipse.platform.doc.user%2Ftasks%2Ftasks-124.htm) with p2 repo http://download.eclipse.org/wildwebdeveloper/snapshots
+* With [Help > Install New Software...](https://help.eclipse.org/latest/topic/org.eclipse.platform.doc.user/tasks/tasks-124.htm) with p2 repo https://download.eclipse.org/wildwebdeveloper/snapshots
 
 ## 🎬 Media Library
 
@@ -93,12 +88,4 @@ Wild Web Developer is based on the Eclipse Generic Editor framework from [Eclips
 
 ## ⌨️ Get involved
 
-<a href="https://mickaelistria.github.io/redirctToEclipseIDECloneCommand/redirect.html"><img src="https://mickaelistria.github.io/redirctToEclipseIDECloneCommand/cloneToEclipseBadge.png" alt="Clone to Eclipse IDE"/></a>  
-
-Community support is currently available via [GitHub issues](https://github.com/eclipse/wildwebdeveloper/issues).
-
-Contribution of Code and Documentation are welcome as [GitHub Pull Request](https://github.com/eclipse/wildwebdeveloper/pulls).
-
-Continuous integration is available on https://jenkins.eclipse.org/wildwebdeveloper/
-
-Quality analysis is available on [SonarCloud](https://sonarcloud.io/dashboard?id=eclipse-wildwebdeveloper).
+See [contribution guide](CONTRIBUTING.md).
