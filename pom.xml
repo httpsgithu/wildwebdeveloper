@@ -2,29 +2,25 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.eclipse.wildwebdeveloper</groupId>
   <artifactId>parent</artifactId>
-  <version>0.5.0-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Eclipse Wild Web Developer - Parent</name>
   <description>Wild Web Developer provides simple but efficient Web development tools in the Eclipse IDE</description>
-  
-
-	<prerequisites>
-		<maven>3.6.3</maven>
-	</prerequisites>
 	<properties>
-		<tycho-version>2.3.0</tycho-version>
-		<tycho.scmUrl>scm:git:https://github.com/eclipse/wildwebdeveloper.git</tycho.scmUrl>
+		<tycho-version>4.0.10</tycho-version>
+		<tycho.scmUrl>scm:git:https://github.com/eclipse-wildwebdeveloper/wildwebdeveloper.git</tycho.scmUrl>
 		<jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<ui.test.vmargs />
 	</properties>
 
 	<modules>
-		<module>target-platform</module>
 		<module>org.eclipse.wildwebdeveloper.embedder.node.linux.x86_64</module>
 		<module>org.eclipse.wildwebdeveloper.embedder.node.linux.aarch64</module>
 		<module>org.eclipse.wildwebdeveloper.embedder.node.macos.x86_64</module>
+		<module>org.eclipse.wildwebdeveloper.embedder.node.macos.aarch64</module>
 		<module>org.eclipse.wildwebdeveloper.embedder.node.win32.x86_64</module>
+		<module>org.eclipse.wildwebdeveloper.embedder.node.win32.aarch64</module>
 		<module>org.eclipse.wildwebdeveloper.embedder.node</module>
 		<module>org.eclipse.wildwebdeveloper</module>
 		<module>org.eclipse.wildwebdeveloper.xml</module>
@@ -32,7 +28,6 @@
 		<module>org.eclipse.wildwebdeveloper.embedder.node.feature</module>
 		<module>org.eclipse.wildwebdeveloper.xml.feature</module>
 		<module>org.eclipse.wildwebdeveloper.feature</module>
-		<module>org.eclipse.wildwebdeveloper.product.branding</module>
 		<module>repository</module>
 	</modules>
 
@@ -49,11 +44,7 @@
 				<artifactId>target-platform-configuration</artifactId>
 				<configuration>
 					<target>
-						<artifact>
-							<groupId>org.eclipse.wildwebdeveloper</groupId>
-							<artifactId>target-platform</artifactId>
-							<version>0.5.0-SNAPSHOT</version>
-						</artifact>
+						<file>${basedir}/../target-platform/target-platform.target</file>
 					</target>
 				</configuration>
 			</plugin>
@@ -106,23 +97,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.6</version>
-				<executions>
-					<execution>
-						<goals><goal>prepare-agent</goal></goals>
-					</execution>
-				</executions>
-				<configuration>
-					<append>true</append>
-					<destFile>${sonar.jacoco.reportPath}</destFile>
-					<includes>
-						<include>org.eclipse.wildwebdeveloper*</include>
-					</includes>
-				</configuration>
-			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -132,7 +106,7 @@
 					<version>${tycho-version}</version>
 					<dependencies>
 						<dependency>
-							<groupId>org.eclipse.tycho.extras</groupId>
+							<groupId>org.eclipse.tycho</groupId>
 							<artifactId>tycho-buildtimestamp-jgit</artifactId>
 							<version>${tycho-version}</version>
 						</dependency>
@@ -153,32 +127,45 @@
 						<generateDownloadStatsProperty>true</generateDownloadStatsProperty>
 						<baselineRepositories>
 							<repository>
-								<url>http://download.eclipse.org/wildwebdeveloper/snapshots/</url>
+								<url>https://download.eclipse.org/wildwebdeveloper/snapshots/</url>
 							</repository>
 						</baselineRepositories>
+						<ignoredPatterns>
+							<pattern>META-INF/ECLIPSE_.RSA</pattern>
+							<pattern>META-INF/ECLIPSE_.SF</pattern>
+						</ignoredPatterns>
 					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-clean-plugin</artifactId>
-					<version>3.1.0</version>
+					<version>3.4.0</version>
 				</plugin>
 				<plugin>
 					<groupId>com.googlecode.maven-download-plugin</groupId>
 					<artifactId>download-maven-plugin</artifactId>
-					<version>1.6.1</version>
+					<version>1.13.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>properties-maven-plugin</artifactId>
+					<version>1.2.1</version>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>target-platform-configuration</artifactId>
 					<version>${tycho-version}</version>
 					<configuration>
-					    <resolver>p2</resolver>
 						<environments>
 							<environment>
 								<os>win32</os>
 								<ws>win32</ws>
 								<arch>x86_64</arch>
+							</environment>
+							<environment>
+								<os>win32</os>
+								<ws>win32</ws>
+								<arch>aarch64</arch>
 							</environment>
 							<environment>
 								<os>linux</os>
@@ -206,47 +193,8 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	
-	
+
 	<profiles>
-		<profile>
-			<id>packAndSign</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.eclipse.cbi.maven.plugins</groupId>
-						<artifactId>eclipse-jarsigner-plugin</artifactId>
-						<version>1.3.0</version>
-						<executions>
-							<execution>
-								<id>sign</id>
-								<phase>package</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.eclipse.tycho</groupId>
-						<artifactId>tycho-p2-plugin</artifactId>
-						<version>${tycho-version}</version>
-						<executions>
-							<execution>
-								<id>p2-metadata</id>
-								<phase>package</phase>
-								<goals>
-									<goal>p2-metadata</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<defaultP2Metadata>false</defaultP2Metadata>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
 		<!-- Automatic profile for Mac-specific settings -->
 		<profile>
 			<id>macos</id>
@@ -263,9 +211,14 @@
 
 	<pluginRepositories>
 		<pluginRepository>
-			<id>cbi</id>
-			<url>https://repo.eclipse.org/content/groups/cbi</url>
-			<snapshots><enabled>true</enabled></snapshots>
+			<id>dash-licenses-snapshots</id>
+			<url>https://repo.eclipse.org/content/repositories/dash-licenses/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
 		</pluginRepository>
 	</pluginRepositories>
 </project>

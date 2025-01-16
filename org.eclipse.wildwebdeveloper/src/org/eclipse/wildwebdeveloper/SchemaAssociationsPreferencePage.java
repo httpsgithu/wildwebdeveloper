@@ -43,6 +43,8 @@ import com.google.gson.reflect.TypeToken;
 @SuppressWarnings("restriction")
 public class SchemaAssociationsPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
+	public static final String PAGE_ID= "org.eclipse.wildwebdeveloper.SchemaAssociationsPreferencePage";
+	
 	private IPreferenceStore store;
 	private Table schemaTable;
 
@@ -60,9 +62,8 @@ public class SchemaAssociationsPreferencePage extends PreferencePage implements 
 		pageTitle.setLayoutData(new GridData(SWT.FILL));
 		pageTitle.setText(SchemaAssociationsMessages.SchemaAssociations_PreferencePage_title);
 		pageTitle.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> {
-			if (getContainer() instanceof IWorkbenchPreferenceContainer) {
-				((IWorkbenchPreferenceContainer) getContainer()).openPage("org.eclipse.ui.preferencePages.ContentTypes",
-						null);
+			if (getContainer() instanceof IWorkbenchPreferenceContainer prefContainer) {
+				prefContainer.openPage("org.eclipse.ui.preferencePages.ContentTypes", null);
 			}
 		}));
 

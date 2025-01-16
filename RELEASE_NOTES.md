@@ -2,8 +2,459 @@
 
 This page describes the noteworthy improvements provided by each release of Eclipse Wild Web Developer.
 
+## 1.3.9
 
-### Next release...
+* 📅 Release Date: November 19th, 2024
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/1.3.8...1.3.9
+
+#### Editing improvements
+
+* Embed Node.js for Windows Aarch64
+
+## 1.3.8
+
+* 📅 Release Date: November 18th, 2024
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/1.3.7...1.3.8
+
+#### Editing improvements
+
+* Register .cts and .mts file extensions with TypeScript content type
+
+#### Dependencies update
+
+* Use the latest VSCode extensions v.1.95.0 for CSS/HTML/JSON editing
+* Embed latest Node.js to v.22.11.0 LTS
+* Use the latest Vue.js LS v.2.1.10
+* Use the latest Angular LS v.19.0.1
+* Other dependency updates
+
+## 1.3.7
+
+* 📅 Release Date: August 28th, 2024
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/1.3.6...1.3.7
+
+#### Editing improvements
+
+* Bugfix for XMLLanguageServer process to properly inherit user.name and user.home
+
+#### Dependencies update
+
+* Update commons-compress to 1.27.1 
+* Use the latest YAML Language Server v.1.15.0
+* Use the latest Vue.js LS v.2.0.22
+* Use the latest TypeScript LS v.4.5.3
+* Use LemMinX v.0.28.0 ⚠️ Your lemminx extensions registered to Wild Web Developer may be incompatible if they were built against an older version of LemMinX ⚠️
+* Use the latest VSCode extensions v.1.92.0 for CSS/HTML/JSON editing
+* Embed latest Node.js to v.20.16.0 LTS
+* Use the latest Angular LS v.18.2.0
+* Other dependency updates
+
+## 1.3.6
+
+* 📅 Release Date: May 28th, 2024
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/1.3.5...1.3.6
+
+#### Editing improvements
+
+* Bugfix: Ensure that the update site contains org.apache.commons.lang3
+* Bugfix: Explicit close in AutoCloseable
+* Bugfix: Enable PGP signing in Jenkinsfile
+
+#### Dependencies update
+
+* Update commons-compress to 1.26.2 
+* Other dependency updates
+
+## 1.3.5
+
+* 📅 Release Date: May 23th, 2024
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/1.3.4...1.3.5
+
+#### Editing improvements
+
+* Make Status creation and logging less verbose
+* Switch CSS/LESS/SCSS to TM4E grammar/language config 
+* Use XML grammar from TM4E 
+
+#### Dependencies update
+
+* Require LSP4E v.0.18.9
+* Use the latest VSCode extensions v.1.89.0 for CSS/HTML/JSON editing
+* Use the latest Angular LS v.17.3.2
+* Embed latest Node.js to v.20.13.1 LTS
+* Use the latest Vue.js LS v.2.0.19
+* Other dependency updates
+
+## 1.3.4
+
+* 📅 Release Date: May 6t, 2024
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/1.3.3...1.3.4
+
+#### Editing improvements
+
+* Allow configuring directory of ESLint package by @PyvesB in #1412
+* Bugfix for preferences layout
+* Bugfix for wrong path to tsserver
+* Include newer snakeyaml (from TM4E repo)
+* Move to Java 21 by @akurtakov in #1495
+* Enable prototype for launch configs
+
+#### Dependencies update
+
+* Use the latest Vue.js LS v.1.8.27
+* Use the latest VSCode ESLint extension v.2.4.4
+* Use the latest VSCode extensions v.1.86.0 for CSS/HTML/JSON editing
+* Use the latest Angular LS v.17.3.1
+* Embed latest Node.js to v.20.12.1 LTS
+* Update commons-compress to 1.26.1 
+* Other dependency updates
+
+## 1.3.3
+
+* 📅 Release Date: November 21th, 2023
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/1.3.2...1.3.3
+
+#### Editing improvements
+
+* Bugfix for fsevents.node is not signed (repeated)
+
+#### Dependencies update
+
+* Other dependency updates
+
+## 1.3.2
+
+* 📅 Release Date: November 20th, 2023
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/1.3.1...1.3.2
+
+#### Editing improvements
+
+* Bugfix for fsevents.node is not signed
+
+#### Dependencies update
+
+* Use the latest VSCode extensions v..1.84.0 for CSS/HTML/JSON editing
+
+## 1.3.1
+
+* 📅 Release Date: November 15th, 2023
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/1.3.0...1.3.1
+
+#### Editing improvements
+
+* Bugfix for fsevents.node is not signed
+* Bugfix for "Chrome Debug Launch configuration
+* Bugfix for WebRoot folder validation in Launch configuration
+* Bugfix for allow using TypeScript version specified by project
+* Bugfix for Run HTML Debug configuration validation
+* Bugfix for "Chrome Debug" session start when a chrome window is already open
+* Bugfix for Preference pages are not found when searching for "yaml"
+* Added autoinsert support for Vue.js
+* Bugfix for Maven build use node from PATH on mac os
+* Added Support for Syntactic and Semantic server modes for Vue.js
+* Use vscode-js-debug instead of deprecated node-debug2 and for Chrome 
+* Bugfix for Read host name from output when debugging
+* Bugfix for Resolve ts->js mapping relative to rootDir
+* Bugfix for Use "outputCapture": "std" for Node launches
+* Bugfix for Drop Thread.sleep from reconcilers
+* Bugfix for Adjusting priority for JS/TS content types
+
+#### Dependencies update
+
+* Snakeyaml dependency is added to WWD repository
+* Switched to use TM4E's own repository to use the most latest release
+* Added 'fsevents' NPM dependency for MacOS users
+* Use the latest Vue.js LS to v.1.8.22
+* Use the latest VSCode extensions v..1.83.0 for CSS/HTML/JSON editing
+* Embed latest Node.js to v.18.18.2 LTS with the latest Security Fixes
+* Use the latest Firefox Debug adapter v.2.9.9
+* Use the latest TypeScript LS v.4.0.0
+* Use the latest Angular LS v.17.0.2
+* Other dependency updates
+
+## 1.3.0
+
+* 📅 Release Date: August 11th, 2023
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/1.2.0...1.3.0
+
+#### Editing improvements
+
+* Bugfix for Run Chrome/Firefox Debug launch configurations to save edited values
+* Bugfix for Run Debug HTML launch configurations validation for edited values
+* Bugfix for "No grammar provided for <vue.sfc.style.variable.injections>" error
+* Bugfix for "Disable download external resources by default" 
+* Bugfix for XML LS (Lemminx) configuration preferences using wrong/not supported values
+
+#### Dependencies update
+
+* Use the latest Vue.js LS to v.1.8.8
+* Use the latest Angular LS to v.16.1.4
+* Use the latest YAML Language Server v.1.14.0
+* Use LemMinX v.0.27.0 ⚠️ Your lemminx extensions registered to Wild Web Developer may be incompatible if they were built against an older version of LemMinX ⚠️
+* Embed latest Node.js to v.18.17.1 LTS  with the latest Security Fixes
+* Other dependency updates
+
+## 1.2.0
+
+* 📅 Release Date: June 30th, 2023
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/1.1.1...1.2.0
+
+#### Editing improvements
+
+* Allow configuring maxTsServerMemory parameter for JS/TS language server
+* Added support for Vue.js editing
+
+#### Dependencies update
+
+* Use the latest VSCode ESLint extension v.2.4.2
+* Use the latest VSCode extensions v..1.79.0 for CSS/HTML/JSON editing
+* Use LemMinX 0.26.1 ⚠️ Your lemminx extensions registered to Wild Web Developer may be incompatible if they were built against an older version of LemMinX ⚠️
+* Embed latest Node.js (v.18.16.1) with the latest Security fixes
+
+## 1.1.1
+
+* 📅 Release Date: May 25th, 2023
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/1.1.0...1.1.1
+
+#### Editing improvements
+
+* Bugfix for "ESLint errors not showing in jsx files" 
+* Bugfix for "Errors in tsx since upgrading to 1.0.0"
+* Bugfix for "Refactorings->Rename doesn't work for TypeScript files" upstream issue (Requires updating to LSP4E v.0.23.0)
+
+#### Dependencies update
+
+* Use the latest VSCode ESLint extension v.2.4.1
+* Use the latest VSCode extensions v..1.78.2 for CSS/HTML/JSON editing
+* Use the latest YAML Language Server v.1.13.0
+
+## 1.1.0
+
+* 📅 Release Date: May 5th, 2023
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/1.0.5...1.1.0
+
+#### Editing improvements
+
+* Updated the TypeScript/JavaScript Grammars
+
+#### Dependencies update
+
+* Embed latest Node.js (v.18.16.0) with the latest Security fixes
+* Use the latest VSCode extensions v..1.78.0 for CSS/HTML/JSON editing
+* Use LemMinX 0.25.0 ⚠️ Your lemminx extensions registered to Wild Web Developer may be incompatible if they were built against an older version of LemMinX ⚠️
+ * Updated language servers
+
+## 1.0.5
+
+* 📅 Release Date: April 22nd, 2023
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/1.0.4...1.0.5
+
+#### Dependencies update
+
+* Embed latest Node.js (v.18.16.0) with the latest Security fixes
+* Use LemMinX 0.24 ⚠️ Your lemminx extensions registered to Wild Web Developer may be incompatible if they were built against an older version of LemMinX ⚠️
+ * Updated language servers
+
+## 1.0.4
+
+* 📅 Release Date: April 6th, 2023
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/1.0.3...1.0.4
+
+#### Editing improvements
+
+* XML catalogs are able to be contributed from a plugin
+* Bugfix for "Unsupported request method: eslint/noConfig" error 
+* Updated the TypeScript/JavaScript Grammars
+
+#### Dependencies update
+
+* Embed latest Node.js (v.18.15.0) with the latest Security fixes
+* Use the latest VSCode extensions v..1.77.0 for CSS/HTML/JSON editing
+
+## 1.0.3
+
+* 📅 Release Date: March 8th, 2023
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/1.0.2...1.0.3
+
+#### Editing improvements
+
+* Bugfix to `Typescript override keyword is not highlighted`
+* Bugfix to `Installation of latest release fails`
+
+#### Dependencies update
+
+* Use the latest VSCode extensions v..1.76.0 for CSS/HTML/JSON editing 
+* Use the latest YAML Language Server v.1.12.0
+
+## 1.0.2
+
+* 📅 Release Date: February 28th, 2023
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/1.0.1...1.0.2
+
+#### Editing improvements
+
+* Improved support for tsconfig.json
+* New XML formatting preferences
+* Support configurable log level for LemMinX
+* Try being more tolerant when reading XML catalog 
+* Bugfix to Debugging TypeScript in non-root folder
+* Added launch/debug support for `*.cjs` (Coommon JS) files
+* Bugfix to Angular Language Server pop-up error
+* Bugfx to 'Unknown at rule' on file extensions associated with content type LESS
+* Bugfix for Typescript analysis broken - TypeScript Language Server is forced to use the WWD provided `tsserver.js`
+* Bugfix to `Unsupported notification method: $/typescriptVersion`
+
+#### Dependencies update
+
+  * Use newer Node.js (18.13.0) internally
+  * Updated language servers
+  * Use LemMinX 0.23 ⚠️ Your lemminx extensions registered to Wild Web Developer may be incompatible if they were built against an older version of LemMinX ⚠️
+
+## 1.0.1
+
+* 📅 Release Date: November 27th, 2022
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/1.0.0...1.0.1
+
+* Show a code mining action to bind schema/grammar (XSD, DTD, RelaxNG) with codelens in XML file
+* UI preferences for TypeScript/ Javascript Inlay Hints 
+* Embedded node.js now installed in the IDE installation folder (instead of workspace)
+* Bugfix to better detect tsconfig.json files when debugging .ts files. This usually makes debugger work better out of the box.
+* Bugfix ESLint support
+* Update dependencies
+
+## 1.0.0
+
+* 📅 Release Date: November 4th, 2022
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/0.15.0...1.0.0
+
+#### Editing improvements
+  * XML auto closing tag  
+  * RelaxNG support : XML validation, completion hover based on RelaxNG schema  
+  * Syntax coloration for DTD
+  * Syntax coloration / language configuration for RelaxNG compact syntax (.rng)
+  * HTML auto closing tag and auto creation of quotes for HTML attribute assignment
+  * HTML preferences (without spaces/tabs configuration)
+  * CSS preferences (without spaces/tabs configuration)
+  
+#### Dependencies update
+
+  * Use newer Node.js (18.12.0) internally
+  * Updated language servers
+  * Use LemMinX 0.22 ⚠️ Your lemminx extensions registered to Wild Web Developer may be incompatible if they were built against an older version of LemMinX ⚠️
+
+## 0.15.1
+
+* 📅 Release Date: October 13th, 2022
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/0.15.0...0.15.1
+
+#### Dependency and inclusions updates
+  * Embedded Node.js
+  * TypeScript, Angular and related language servers updated
+  * Newer Eclipse Platform and other dependencies updated
+  
+#### Editing improvements
+  * XML Formatting preference page is added
+  * An option to download external resources like referenced DTD, XSDSupport is added
+  * Support for OnEnterRules for xml, html, js and ts files - indentation rules are added
+  
+### Other bugfixes and improvements
+
+## 0.15.0
+
+* 📅 Release Date: July 29th, 2022
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/0.13.6...0.15.0
+
+#### Incompatibility: LemMinX 0.21.0
+
+Wild Web Developer now includes LemMinX 0.21.0. This version has some API change that may break existing extensions. So if you do include a LemMinX extension via Wild Web Developer extension point, your extension will be likely failing. Remediation to to update your LemMinX extension to use LemMinX 0.21.0 and then include this new version of your extension in your Wild Web Developer extension plugin.
+
+
+## 0.13.6
+
+* 📅 Release Date: July 7th 2022
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/0.13.5...0.13.6
+
+* Use Java 17
+* Bugfixes
+
+## 0.13.5
+
+* 📅 Release Date: May 29th 2022
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/0.13.4...0.13.5
+
+* Dependency and inclusions updates
+  ** Embedded Node.js
+  ** TypeScript, Angular and related language servers
+  ** Newer Eclipse Platform and other dependencies updated
+
+## 0.13.4
+
+* 📅 Release Date: April 11th 2022
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/0.13.3...0.13.4
+
+* Dependency and inclusions updates
+  ** Embedded Node.js
+  ** LemMinX language server 0.19.1
+  ** Newer Eclipse Platform and other dependencies updated
+* Better support for JSX & TSX (recognized as JS/TS files, and for some config files, now recognized as json.
+* Support Eclipse variables in Launch Configuration (so they're more portable)
+* Other bugfixes and improvements
+
+## 0.13.3
+
+* 📅 Release Date: February 8th, 2022
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/0.13.2...0.13.3
+
+Bugfixes, update of dependencies and releng improvements
+
+## 0.13.2
+
+* 📅 Release Date: January 13th, 2022
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/0.13.1...0.13.2
+
+Bugfixes, update of dependencies and releng improvements
+
+## 0.13.1
+
+* 📅 Release Date: November 9th, 2021
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/0.13.0...0.13.1
+
+#### Update Language Servers
+
+Updated most language servers, including LemMinX-Maven.
+
+#### Support .cjs and .mjs files as JavaScript
+
+Registered those extensions as JavaScript files so they get edition assistance.
+
+#### Update build machinery and other dependencies
+
+## 0.13.0
+
+* 📅 Release Date: September 23rd, 2021
+* All changes: https://github.com/eclipse/wildwebdeveloper/compare/0.12.0...0.13.0
+
+#### Fix XML catalog in case of schemas provided by plugins
+
+The catalog now properly resolve schemas that were installed in WebTools from plugins. Under the hood, the `platform:/...` URIs are now resolved to `file:/...` URIs that the language server can understand.
+
+This should allow better integration with WebTools catalog, and the multiple schemas provided by plugins like Java/Jakarta EE support.
+
+#### IDE package for macos/aarch64
+
+You can now find in the download area an IDE package dedicated to macos with aarch64 (M1) processors. This should perform more efficiently than the macos/x86_64 package on newer machines.
+
+#### Use LemMinX 0.18.0
+
+XML support was updated to use LemMinX 0.18.0 (was 0.16.2). As a consequence, plugins providing extension for Wild Web Developer XML support should consider moving their requirements to LemMinX 0.18 and `org.eclipse.wildwebdeveloper.xml` 0.13.0.
+
+#### Other updates
+
+* Node is now in version 14.17.1
+* Most npm-based language servers were updated to their latest release
+
+
+### Previous releases...
 
 ## 0.12.0
 
@@ -13,8 +464,6 @@ This page describes the noteworthy improvements provided by each release of Ecli
 #### Use LemMinX 0.16
 
 XML support was updated to use LemMinX 0.16.2 (was 0.15.0). As a consequence, plugins providing extension for Wild Web Developer XML support should consider moving their requirements to LemMinX 0.16 and `org.eclipse.wildwebdeveloper.xml` 0.12.0.
-
-### Previous releases...
 
 ## 0.11.6
 

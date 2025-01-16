@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Red Hat Inc. and others.
+ * Copyright (c) 2019, 2022 Red Hat Inc. and others.
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -13,6 +13,7 @@
 package org.eclipse.wildwebdeveloper.debug.node;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
@@ -23,11 +24,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.wildwebdeveloper.Activator;
+import org.eclipse.wildwebdeveloper.debug.LaunchConstants;
 import org.eclipse.wildwebdeveloper.debug.Messages;
 
 public class AttachTab extends AbstractLaunchConfigurationTab {
 
+	private static final String DEFAULT_ADDRESS = "localhost"; //$NON-NLS-1$
+	
 	private Text addressText;
 	private Spinner portSpinner;
 	private int defaultPort;
@@ -62,24 +65,24 @@ public class AttachTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute(NodeAttachDebugDelegate.ADDRESS, "localhost");
-		configuration.setAttribute(NodeAttachDebugDelegate.PORT, defaultPort);
+		configuration.setAttribute(NodeAttachDebugDelegate.ADDRESS, DEFAULT_ADDRESS);
+		configuration.setAttribute(LaunchConstants.PORT, defaultPort);
 	}
 
 	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			this.addressText.setText(configuration.getAttribute(NodeAttachDebugDelegate.ADDRESS, "")); //$NON-NLS-1$
-			this.portSpinner.setSelection(defaultPort);
+			this.addressText.setText(configuration.getAttribute(NodeAttachDebugDelegate.ADDRESS, DEFAULT_ADDRESS));
+			this.portSpinner.setSelection(configuration.getAttribute(LaunchConstants.PORT, defaultPort));
 		} catch (CoreException e) {
-			Activator.getDefault().getLog().log(e.getStatus());
+			ILog.get().log(e.getStatus());
 		}
 	}
 
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
 		configuration.setAttribute(NodeAttachDebugDelegate.ADDRESS, this.addressText.getText());
-		configuration.setAttribute(NodeAttachDebugDelegate.PORT, this.portSpinner.getSelection());
+		configuration.setAttribute(LaunchConstants.PORT, this.portSpinner.getSelection());
 	}
 
 	@Override
