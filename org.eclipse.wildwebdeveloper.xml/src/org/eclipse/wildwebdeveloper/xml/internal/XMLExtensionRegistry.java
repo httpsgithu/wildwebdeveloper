@@ -25,11 +25,10 @@ import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.wildwebdeveloper.xml.InitializationOptionsProvider;
 import org.eclipse.wildwebdeveloper.xml.LemminxClasspathExtensionProvider;
 
@@ -64,8 +63,7 @@ public class XMLExtensionRegistry {
 										new Path(extension.getValue())))
 								.getPath()).getAbsolutePath();
 					} catch (InvalidRegistryObjectException | IOException e) {
-						Activator.getDefault().getLog()
-								.log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(), e));
+						ILog.get().error(e.getMessage(), e);
 						return null;
 					}
 				}).filter(Objects::nonNull).collect(Collectors.toList());
@@ -90,13 +88,12 @@ public class XMLExtensionRegistry {
 			try {
 				if (extension.getName().equals("classpathExtensionProvider") && extension.getAttribute("provider") != null) {
 					final Object executableExtension = extension.createExecutableExtension("provider");
-					if (executableExtension instanceof LemminxClasspathExtensionProvider) {
-						extensionProviders.put(extension, (LemminxClasspathExtensionProvider) executableExtension);
+					if (executableExtension instanceof LemminxClasspathExtensionProvider extensionProvider) {
+						extensionProviders.put(extension, extensionProvider);
 					}
 				}
 			} catch (Exception ex) {
-				Activator.getDefault().getLog()
-						.log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, ex.getMessage(), ex));
+				ILog.get().error(ex.getMessage(), ex);
 
 			}
 		}
@@ -114,8 +111,7 @@ public class XMLExtensionRegistry {
 						this.extensions.put(extension, extension.getAttribute("path"));
 					}
 				} catch (Exception ex) {
-					Activator.getDefault().getLog()
-							.log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, ex.getMessage(), ex));
+					ILog.get().error(ex.getMessage(), ex);
 				}
 			}
 		}
@@ -131,16 +127,15 @@ public class XMLExtensionRegistry {
 			try {
 				if (extension.getName().equals("initializationOptionsProvider") && extension.getAttribute("provider") != null) {
 					final Object executableExtension = extension.createExecutableExtension("provider");
-					if (executableExtension instanceof InitializationOptionsProvider) {
-						Map<String, Object> options = ((InitializationOptionsProvider)executableExtension).get();
+					if (executableExtension instanceof InitializationOptionsProvider opt) {
+						Map<String, Object> options = opt.get();
 						if (options != null) {
 							res.putAll(options);
 						}
 					}
 				}
 			} catch (Exception ex) {
-				Activator.getDefault().getLog()
-						.log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, ex.getMessage(), ex));
+				ILog.get().error(ex.getMessage(), ex);
 
 			}
 		}

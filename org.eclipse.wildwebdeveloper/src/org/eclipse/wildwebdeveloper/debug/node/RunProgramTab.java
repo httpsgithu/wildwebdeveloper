@@ -20,6 +20,8 @@ import java.io.File;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -33,7 +35,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.wildwebdeveloper.Activator;
+import org.eclipse.wildwebdeveloper.debug.LaunchConstants;
 import org.eclipse.wildwebdeveloper.debug.Messages;
 
 public class RunProgramTab extends AbstractLaunchConfigurationTab {
@@ -56,25 +58,32 @@ public class RunProgramTab extends AbstractLaunchConfigurationTab {
 		decoration.setImage(fieldDecoration.getImage());
 		this.programPathText.addModifyListener(event -> {
 			setDirty(true);
-			File file = new File(programPathText.getText());
-			if (!file.isFile()) {
-				String errorMessage = Messages.RunProgramTab_error_unknownFile;
-				setErrorMessage(errorMessage);
-				decoration.setDescriptionText(errorMessage);
+			File file;
+			try {
+				file = new File(VariablesPlugin.getDefault().getStringVariableManager().performStringSubstitution(programPathText.getText()));
+				if (!file.isFile()) {
+					String errorMessage = Messages.RunProgramTab_error_unknownFile;
+					setErrorMessage(errorMessage);
+					decoration.setDescriptionText(errorMessage);
+					decoration.show();
+				} else if (!shortcut.canLaunch(file)){ //$NON-NLS-1$
+					String errorMessage = Messages.RunProgramTab_error_notJSFile;
+					setErrorMessage(errorMessage);
+					decoration.setDescriptionText(errorMessage);
+					decoration.show();
+				} else if (!file.canRead()) {
+					String errorMessage = Messages.RunProgramTab_error_nonReadableFile;
+					setErrorMessage(errorMessage);
+					decoration.setDescriptionText(errorMessage);
+					decoration.show();
+				} else {
+					setErrorMessage(null);
+					decoration.hide();
+				}
+			} catch (CoreException ex) {
+				setErrorMessage(ex.getMessage());
+				decoration.setDescriptionText(ex.getMessage());
 				decoration.show();
-			} else if (!shortcut.canLaunch(file)){ //$NON-NLS-1$
-				String errorMessage = Messages.RunProgramTab_error_notJSFile;
-				setErrorMessage(errorMessage);
-				decoration.setDescriptionText(errorMessage);
-				decoration.show();
-			} if (!file.canRead()) {
-				String errorMessage = Messages.RunProgramTab_error_nonReadableFile;
-				setErrorMessage(errorMessage);
-				decoration.setDescriptionText(errorMessage);
-				decoration.show();
-			} else {
-				setErrorMessage(null);
-				decoration.hide();
 			}
 			updateLaunchConfigurationDialog();
 		});
@@ -104,18 +113,18 @@ public class RunProgramTab extends AbstractLaunchConfigurationTab {
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
 			String defaultSelectedFile = pathOrEmpty(getSelectedFile(shortcut::canLaunch));
-			this.programPathText.setText(configuration.getAttribute(NodeRunDAPDebugDelegate.PROGRAM, defaultSelectedFile)); //$NON-NLS-1$
+			this.programPathText.setText(configuration.getAttribute(LaunchConstants.PROGRAM, defaultSelectedFile)); //$NON-NLS-1$
 			this.argumentsText.setText(configuration.getAttribute(NodeRunDAPDebugDelegate.ARGUMENTS, "")); //$NON-NLS-1$
 			this.workingDirectoryText.setText(configuration.getAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, pathOrEmpty(getSelectedProject()))); //$NON-NLS-1$
 		} catch (CoreException e) {
-			Activator.getDefault().getLog().log(e.getStatus());
+			ILog.get().log(e.getStatus());
 		}
 	}
 
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
 		String programPath = this.programPathText.getText();
-		configuration.setAttribute(NodeRunDAPDebugDelegate.PROGRAM, programPath);
+		configuration.setAttribute(LaunchConstants.PROGRAM, programPath);
 		configuration.setAttribute(NodeRunDAPDebugDelegate.ARGUMENTS, this.argumentsText.getText());
 		configuration.setAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, this.workingDirectoryText.getText());
 		configuration.setMappedResources(ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(new File(programPath).toURI()));

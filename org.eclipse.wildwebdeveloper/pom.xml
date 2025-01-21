@@ -4,10 +4,10 @@
 	<parent>
 		<groupId>org.eclipse.wildwebdeveloper</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.5.0-SNAPSHOT</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<packaging>eclipse-plugin</packaging>
-	<version>0.5.17-SNAPSHOT</version>
+	<version>1.2.6-SNAPSHOT</version>
 
 	<build>
 		<plugins>
@@ -29,57 +29,90 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-scm-plugin</artifactId>
+				<version>2.1.0</version>
+				<executions>
+					<execution>
+						<id>fetch-eslint-ls-package.json</id>
+						<goals>
+							<goal>checkout</goal>
+						</goals>
+						<phase>generate-sources</phase>
+						<configuration>
+							<connectionUrl>scm:git:https://github.com/microsoft/vscode-eslint.git</connectionUrl>
+							<scmVersionType>tag</scmVersionType>
+							<scmVersion>release/2.4.4</scmVersion>
+							<basedir>${project.build.directory}</basedir>
+							<checkoutDirectory>${project.build.directory}/vscode-eslint-ls-package-json/extension</checkoutDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>com.googlecode.maven-download-plugin</groupId>
 				<artifactId>download-maven-plugin</artifactId>
 				<executions>
 					<execution>
 						<id>fetch-vscode</id>
-						<phase>generate-resources</phase>
+						<phase>generate-sources</phase>
 						<goals>
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>https://az764295.vo.msecnd.net/stable/f30a9b73e8ffc278e71575118b6bf568f04587c8/code-stable-x64-1614898391.tar.gz</url>
+							<url>https://vscode.download.prss.microsoft.com/dbazure/download/stable/138f619c86f1199955d53b4166bef66ef252935c/code-stable-x64-1733887021.tar.gz</url>
 							<unpack>true</unpack>
 							<outputDirectory>${project.build.directory}/vscode</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
-						<id>fetch-chrome-debug-adapter</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>wget</goal>
-						</goals>
-						<configuration>
-                            <url>https://msjsdiag.gallery.vsassets.io/_apis/public/gallery/publisher/msjsdiag/extension/debugger-for-chrome/4.12.12/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage</url>
-							<outputFileName>chromeDebugAdapter.zip</outputFileName>
-							<unpack>true</unpack>
-							<outputDirectory>${project.build.directory}/chrome-debug-adapter</outputDirectory>
-						</configuration>
-					</execution>
-					<execution>
 						<id>fetch-eslint-ls</id>
-						<phase>generate-resources</phase>
+						<phase>generate-sources</phase>
 						<goals>
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-                            <url>https://dbaeumer.gallery.vsassets.io/_apis/public/gallery/publisher/dbaeumer/extension/vscode-eslint/2.1.14/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage</url>
+                            <url>https://dbaeumer.gallery.vsassets.io/_apis/public/gallery/publisher/dbaeumer/extension/vscode-eslint/2.4.4/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage</url>
 							<outputFileName>vscode-eslint-ls.zip</outputFileName>
 							<unpack>true</unpack>
 							<outputDirectory>${project.build.directory}/vscode-eslint-ls</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
-						<id>fetch-eslint-ls-package.json</id>
-						<phase>generate-resources</phase>
+						<id>fetch-js-debug</id>
+						<phase>generate-sources</phase>
 						<goals>
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<skipCache>true</skipCache>
-							<url>https://raw.githubusercontent.com/microsoft/vscode-eslint/release/2.1.14/server/package.json</url>
+							<url>https://github.com/microsoft/vscode-js-debug/releases/download/v1.83.0/js-debug-dap-v1.83.0.tar.gz</url>
+							<outputFileName>js-debug.tar.gz</outputFileName>
+							<unpack>true</unpack>
+							<outputDirectory>${project.basedir}</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.3.1</version>
+				<executions>
+					<execution>
+						<id>install-eslint-ls-package.json</id>
+						<phase>process-sources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
 							<outputDirectory>${project.build.directory}/vscode-eslint-ls/extension/server</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.build.directory}/vscode-eslint-ls-package-json/extension/server</directory>
+									<includes>
+										<include>package.json</include>
+									</includes>
+								</resource>
+							</resources>
 						</configuration>
 					</execution>
 				</executions>
@@ -87,17 +120,18 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>3.1.0</version>
 				<executions>
 					<execution>
-						<phase>generate-resources</phase>
+						<id>remove package-lock before install</id>
+						<phase>compile</phase>
 						<goals>
 							<goal>run</goal>
 						</goals>
 						<configuration>
 							<target>
 								<delete
-									file="${project.build.directory}/chrome-debug-adapter/extension/.gitignore" />
+									file="${project.directory}/package-lock.json" />
 							</target>
 						</configuration>
 					</execution>
@@ -106,7 +140,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>3.5.0</version>
 				<executions>
 					<execution>
 						<id>local install VSCode Language servers</id>
@@ -120,11 +154,10 @@
 								<arg>pack</arg>
 								<arg>--no-bin-links</arg>
 								<arg>--ignore-scripts</arg>
+								<arg>--install-strategy=hoisted</arg>
 								<arg>vscode/VSCode-linux-x64/resources/app/extensions/html-language-features/server</arg>
 								<arg>vscode/VSCode-linux-x64/resources/app/extensions/css-language-features/server</arg>
 								<arg>vscode/VSCode-linux-x64/resources/app/extensions/json-language-features/server</arg>
-								<arg>vscode/VSCode-linux-x64/resources/app/extensions/ms-vscode.node-debug2</arg>
-								<arg>chrome-debug-adapter/extension/</arg>
 								<arg>vscode-eslint-ls/extension/server</arg>
 							</arguments>
 							<workingDirectory>${project.build.directory}</workingDirectory>
@@ -135,27 +168,19 @@
 						<goals>
 							<goal>exec</goal>
 						</goals>
-						<phase>generate-resources</phase>
+						<phase>process-resources</phase>
 						<configuration>
 							<executable>npm</executable>
 							<arguments>
 								<arg>install</arg>
+								<arg>--omit=dev</arg>
 								<arg>--only=prod</arg>
 								<arg>--no-bin-links</arg>
 								<arg>--ignore-scripts</arg>
-								<arg>${project.build.directory}/node-debug2-1.42.5.tgz</arg>
-								<arg>typescript@4.1.3</arg>
-								<arg>typescript-language-server@0.5.1</arg>
-								<arg>typescript-lit-html-plugin@0.9.0</arg>
-								<arg>typescript-plugin-css-modules@3.1.0</arg>
-								<arg>${project.build.directory}/vscode-css-languageserver-1.0.0.tgz</arg>
-								<arg>${project.build.directory}/vscode-html-languageserver-1.0.0.tgz</arg>
-								<arg>${project.build.directory}/vscode-json-languageserver-1.3.4.tgz</arg>
-								<arg>yaml-language-server@0.16.0</arg>
-								<arg>firefox-debugadapter@2.9.1</arg>
-								<arg>${project.build.directory}/debugger-for-chrome-4.12.12.tgz</arg>
-								<arg>${project.build.directory}/eslint-server-2.1.14.tgz</arg>
-								<arg>@angular/language-server@11.1.1</arg>
+								<arg>--install-strategy=hoisted</arg>
+								<arg>--force</arg>
+<!-- The actual verions for the LS and other dependency NPM Modules are to be set in  './package.json file',  
+	which is used to install the dependencies -->
 							</arguments>
 							<workingDirectory>${project.basedir}</workingDirectory>
 						</configuration>
@@ -169,9 +194,68 @@
 					<jgit.ignore>
 						node_modules
 						package-lock.json
+						js-debug
 					</jgit.ignore>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>sign</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+					    <dependencies>
+							<dependency>
+								<groupId>ant-contrib</groupId>
+								<artifactId>ant-contrib</artifactId>
+								<version>1.0b3</version>
+								<exclusions>
+									<exclusion>
+										<groupId>ant</groupId>
+										<artifactId>ant</artifactId>
+									</exclusion>
+								</exclusions>
+							</dependency>
+						</dependencies>
+						<executions>
+							<execution>
+								<id>sign-node-files</id>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<phase>compile</phase>
+								<configuration>
+									<target>
+										<!-- See last answer of https://stackoverflow.com/questions/4368243/maven-antrun-with-sequential-ant-contrib-fails-to-run/45958355 -->
+										<!-- and http://ant-contrib.sourceforge.net/tasks/tasks/index.html -->
+										<taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="maven.plugin.classpath" />
+										<for param="nodeFileAbsolute">
+											<fileset dir="${project.basedir}/node_modules" includes="**/*.node" erroronmissingdir="false" />
+											<sequential>
+												<echo level="info" message="Mac-sign @{nodeFileAbsolute}" />
+												<move file="@{nodeFileAbsolute}" tofile="@{nodeFileAbsolute}-tosign" />
+												<exec executable="curl" dir="${project.build.directory}" failonerror="true">
+													<arg value="-o" />
+													<arg value="@{nodeFileAbsolute}" />
+													<arg value="-F" />
+													<arg value="file=@{nodeFileAbsolute}-tosign" />
+													<arg value="https://cbi.eclipse.org/macos/codesign/sign" />
+												</exec>
+												<delete file="@{nodeFileAbsolute}-tosign" />
+											</sequential>
+										</for>
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

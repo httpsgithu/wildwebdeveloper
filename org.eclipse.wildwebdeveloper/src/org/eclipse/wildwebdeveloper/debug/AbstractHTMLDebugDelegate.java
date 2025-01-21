@@ -15,34 +15,23 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.lsp4e.debug.DSPPlugin;
 import org.eclipse.lsp4e.debug.launcher.DSPLaunchDelegate;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.wildwebdeveloper.Activator;
 import org.eclipse.wildwebdeveloper.embedder.node.NodeJSManager;
 
 public class AbstractHTMLDebugDelegate extends DSPLaunchDelegate {
-	public static final String PROGRAM = "program"; //$NON-NLS-1$
 	public static final String ARGUMENTS = "runtimeArgs"; //$NON-NLS-1$
-	/**
-	 * @deprecated use {@link DebugPlugin#ATTR_WORKING_DIRECTORY}
-	 */
-	@Deprecated
-	public static final String CWD = DebugPlugin.ATTR_WORKING_DIRECTORY;
-	/**
-	 * @deprecated use {@link ILaunchManager.ATTR_ENVIRONMENT_VARIABLES}
-	 */
-	@Deprecated
-	public static final String ENV = ILaunchManager.ATTR_ENVIRONMENT_VARIABLES;
-	public static final String PORT = "port"; //$NON-NLS-1$
+	public static final String WEBROOT = "webRoot";
+	public static final String FILE_RADIO_BUTTON_SELECTED = "fileRadioButtonSelected";
 
 	public void launchWithParameters(ILaunchConfiguration configuration, String mode, ILaunch launch,
 			IProgressMonitor monitor, Map<String, Object> param, File debugAdapter) throws CoreException {
@@ -53,20 +42,22 @@ public class AbstractHTMLDebugDelegate extends DSPLaunchDelegate {
 					monitor);
 			builder.setLaunchDebugAdapter(NodeJSManager.getNodeJsLocation().getAbsolutePath(), debugCmdArgs);
 			builder.setMonitorDebugAdapter(configuration.getAttribute(DSPPlugin.ATTR_DSP_MONITOR_DEBUG_ADAPTER, false));
+
+			//If webRoot is set -> Inform DSPLaunchDelegate
+			if (!configuration.getAttribute(WEBROOT, "").isBlank()) {
+				param.put(WEBROOT, VariablesPlugin.getDefault().getStringVariableManager().performStringSubstitution(configuration.getAttribute(WEBROOT,"")));
+			}
+
 			builder.setDspParameters(param);
 
 			super.launch(builder);
 		} catch (Exception e) {
-			IStatus errorStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(), e);
-			Activator.getDefault().getLog().log(errorStatus);
-			Display.getDefault().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-					ErrorDialog.openError(Display.getDefault().getActiveShell(), "Debug error", e.getMessage(), errorStatus); //$NON-NLS-1$
-			}
-			});
+			IStatus errorStatus = Status.error(e.getMessage(), e);
+			ILog.get().log(errorStatus);
+            Display.getDefault().asyncExec(() -> ErrorDialog.openError(Display.getDefault().getActiveShell(),
+                    "Debug error", e.getMessage(), errorStatus));
 
-		}
+        }
 	}
 
 }

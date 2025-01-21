@@ -1,0 +1,137 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: License check
+
+on:
+  push:
+    branches: 
+      - 'master'
+  pull_request:
+    branches: 
+     - 'master'
+  issue_comment:
+    types: [created]
+    
+jobs:
+  call-mvn-license-check:
+    uses: eclipse-dash/dash-licenses/.github/workflows/mavenLicenseCheck.yml@master
+    with:
+      projectId: tools.wildwebdeveloper
+      javaVersion: 21
+    secrets:
+      gitlabAPIToken: ${{ secrets.GITLAB_API_TOKEN }}
+    permissions:
+      pull-requests: write
+  npm-check:
+    if: github.event_name != 'issue_comment' || ( github.event.issue.pull_request != '' && (github.event.comment.body == '/request-license-review') )
+    # Run on all non-comment events specified by the calling workflow and for comments on PRs that have a corresponding body.
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      if: github.event_name == 'push' || github.event_name == 'pull_request'   
+    - uses: actions/github-script@v7
+      if: github.event_name == 'issue_comment' 
+      id: get-pr
+      with:
+        script: |
+          const request = {
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number
+          }
+          core.info(`Getting PR #${request.pull_number} from ${request.owner}/${request.repo}`)
+          try {
+            const result = await github.rest.pulls.get(request)
+            return result.data
+          } catch (err) {
+            core.setFailed(`Request failed with error ${err}`)
+          }
+    - uses: actions/checkout@v4
+      if: github.event_name == 'issue_comment' 
+      with:
+        repository: ${{ fromJSON(steps.get-pr.outputs.result).head.repo.full_name }}
+        ref: ${{ fromJSON(steps.get-pr.outputs.result).head.sha }} # or .head.ref for branch name
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+    - name: Set up Maven
+      uses: stCarolas/setup-maven@v5
+      with:
+        maven-version: 3.9.9
+    - name: Cache local Maven repository
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+    - name: Prepare NPM deps
+      run: mvn -DskipTests -pl org.eclipse.wildwebdeveloper.embedder.node,org.eclipse.wildwebdeveloper package
+    - name: Get Dash license tool
+      run: |
+        mvn -U dependency:get -Dartifact=org.eclipse.dash:org.eclipse.dash.licenses:1.1.0 -DremoteRepositories="https://repo.eclipse.org/content/repositories/dash-licenses"
+        mkdir -p target/dash         # Make directory for dash-license review summary 
+    - name: Set request review parameters
+      if: github.event_name == 'issue_comment'
+      run: |
+        echo "request-review=1" >> $GITHUB_ENV
+      # Run only for comments on PRs that have a corresponding body.
+    - name:  NPM Deps License check
+      shell: bash {0}
+      run: |
+        set +x
+
+        savePWD=$PWD
+        mkdir -p target/dash         # Make directory for dash-license review summary 
+
+        projectId="tools.wildwebdeveloper"
+        gitlabAPIToken="${{ secrets.GITLAB_API_TOKEN }}"
+        dashLicenseToolJar=$(ls ~/.m2/repository/org/eclipse/dash/org.eclipse.dash.licenses/1.1.0/org.eclipse.dash.licenses-*.jar | tail -n 1)
+        npmArgs=" --no-bin-links --ignore-scripts"
+        dashArgs="-excludeSources local -summary $savePWD/target/dash/npm-review-summary"
+        exitStatus=0
+        if [ ${{ env.request-review }} ]; then 
+          # Add "-project <Project Name> -token <Token>" here when a review is required
+          dashArgs="$dashArgs -review -project $projectId -token $gitlabAPIToken" 
+        fi
+        #
+        # Check NPM dependency licenses in main WildWebDeveloper project 
+        #
+        echo ""
+        echo "------ Checking project [org.eclipse.wildwebdeveloper] ------"
+        java -jar $dashLicenseToolJar $dashArgs org.eclipse.wildwebdeveloper/package-lock.json
+        currentStatus=$?
+        if [[ $currentStatus != 0 ]]; then
+          exitStatus=$(($exitStatus + $currentStatus)) # Save for future
+        fi
+        cd $savePWD
+        
+        echo ""
+        if [[ $exitStatus == 0 ]]; then # All licenses are vetted
+          # echo "::set-output name=build-succeeded::$(echo 1)"
+          echo "build-succeeded=1" >> $GITHUB_OUTPUT
+          echo "All licenses are vetted"
+        else
+          # echo "::set-output name=build-succeeded::$(echo 0)"
+          echo "build-succeeded=0" >> $GITHUB_OUTPUT
+          if [ ${{ env.request-review }} ]; then 
+            echo "Some contents requires a review"
+            echo ""
+            echo "The NPM dependency License Check review summary is saved in 'target/dash/npm-review-summary'" 
+          else
+            echo "Committers can request a review by commenting '/request-license-review'"
+            exit 1
+          fi
+        fi
+        echo ""
+
+    - uses: actions/upload-artifact@v4
+      if: always() && env.request-review
+      with:
+        name: 'tools.wildwebdeveloper-license-vetting-summary'
+        path: |
+          target/dash/npm-review-summary
+          target/dash/summary

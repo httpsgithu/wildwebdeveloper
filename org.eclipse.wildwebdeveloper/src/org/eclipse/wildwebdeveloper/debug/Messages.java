@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Red Hat Inc. and others.
+ * Copyright (c) 2019, 2023 Red Hat Inc. and others.
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -18,6 +18,12 @@ public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.wildwebdeveloper.debug.messages"; //$NON-NLS-1$
 	public static String AbstractRunHTMLDebugTab_browse;
 	public static String AbstractRunHTMLDebugTab_fileRadioToolTip;
+	public static String AbstractRunHTMLDebugTab_webRoot_folder;
+	public static String AbstractRunHTMLDebugTab_browse_workspace;
+	public static String AbstractRunHTMLDebugTab_select_webroot;
+	public static String AbstractRunHTMLDebugTab_cannot_debug_without_webroot;
+	public static String AbstractRunHTMLDebugTab_cannot_access_webroot_folder;
+	public static String AbstractRunHTMLDebugTab_webroot_folder_is_not_a_directory;
 	public static String AttachTab_address;
 	public static String AttachTab_port;
 	public static String AttachTab_title;
@@ -28,6 +34,7 @@ public class Messages extends NLS {
 	public static String RunProgramTab_error_nonReadableFile;
 	public static String RunProgramTab_error_notJSFile;
 	public static String RunProgramTab_error_unknownFile;
+	public static String RunProgramTab_error_malformedUR;
 	public static String RunProgramTab_program;
 	public static String RunProgramTab_title;
 	public static String RunProgramTab_workingDirectory;

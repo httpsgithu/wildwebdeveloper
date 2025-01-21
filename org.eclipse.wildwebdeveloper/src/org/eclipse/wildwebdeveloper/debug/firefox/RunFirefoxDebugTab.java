@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.wildwebdeveloper.debug.firefox;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
@@ -37,7 +40,18 @@ public class RunFirefoxDebugTab extends AbstractRunHTMLDebugTab {
 			updateLaunchConfigurationDialog();
 		}));
 	}
-	
+
+	@Override
+	public void initializeFrom(ILaunchConfiguration configuration) {
+		super.initializeFrom(configuration);
+		try {
+			boolean reloadOnChangeValue = configuration.getAttribute(FirefoxRunDABDebugDelegate.RELOAD_ON_CHANGE, false);
+			reloadOnChange.setSelection(reloadOnChangeValue);
+		} catch (CoreException ex) {
+			ILog.get().log(ex.getStatus());
+		}
+	}
+
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
 		super.performApply(configuration);

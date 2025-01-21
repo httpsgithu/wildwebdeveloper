@@ -1,14 +1,15 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Wild Web Developer: web development in Eclipse IDE
+Bundle-Name: %pluginName
+Bundle-Vendor: %providerName
+Bundle-Localization: plugin
 Bundle-SymbolicName: org.eclipse.wildwebdeveloper;singleton:=true
 Automatic-Module-Name: org.eclipse.wildwebdeveloper
-Bundle-Version: 0.5.17.qualifier
+Bundle-Version: 1.2.6.qualifier
 Bundle-Activator: org.eclipse.wildwebdeveloper.Activator
-Bundle-Vendor: Eclipse Wild Web Developer project
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.lsp4e;bundle-version="0.13.6",
+ org.eclipse.core.runtime;bundle-version="3.29.0",
+ org.eclipse.lsp4e;bundle-version="0.18.9",
  org.eclipse.lsp4j.jsonrpc;bundle-version="0.12.0",
  org.eclipse.lsp4j;bundle-version="0.12.0",
  org.eclipse.tm4e.registry;bundle-version="0.1.0",
@@ -20,17 +21,19 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources;bundle-version="3.12.0",
  org.eclipse.debug.core;bundle-version="3.11.0",
  org.eclipse.debug.ui;bundle-version="3.11.0",
- org.eclipse.lsp4e.debug;bundle-version="0.9.0",
+ org.eclipse.lsp4e.debug;bundle-version="0.15.5",
  com.google.gson;bundle-version="2.8.2",
  org.eclipse.core.expressions;bundle-version="3.6.0",
  org.eclipse.tm4e.languageconfiguration,
  org.eclipse.compare;resolution:=optional,
  org.eclipse.ui.console;bundle-version="3.9.0",
  org.eclipse.ui.browser;bundle-version="3.6.0",
- org.eclipse.wildwebdeveloper.embedder.node;bundle-version="0.2.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+ org.eclipse.wildwebdeveloper.embedder.node;bundle-version="1.0.3",
+ org.eclipse.core.variables;bundle-version="3.5.0",
+ org.eclipse.tm4e.language_pack
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-ActivationPolicy: lazy
 Eclipse-BundleShape: dir
 Export-Package: org.eclipse.wildwebdeveloper.debug;x-internal:=true,
- org.eclipse.wildwebdeveloper.debug.node;x-internal:=true
-
+ org.eclipse.wildwebdeveloper.debug.node;x-internal:=true,
+ org.eclipse.wildwebdeveloper.debug.npm;x-internal:=true

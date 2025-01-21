@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Adapters;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferencePage;
@@ -94,7 +95,7 @@ public class XMLCatalogPreferencePage extends PreferencePage implements IWorkben
 
 		Button addButton = new Button(buttonComposite, SWT.PUSH);
 		addButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		addButton.setText(Messages.PreferencePage_Add);
+		addButton.setText(Messages.Add_button);
 		addButton.addSelectionListener(widgetSelectedAdapter(e -> {
 			File result = openSelectFileDialog();
 			if (result == null) {
@@ -108,7 +109,7 @@ public class XMLCatalogPreferencePage extends PreferencePage implements IWorkben
 		
 		final Button removeButton = new Button(buttonComposite, SWT.PUSH);
 		removeButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		removeButton.setText(Messages.PreferencePage_Remove);
+		removeButton.setText(Messages.Remove_button);
 		removeButton.setEnabled(false);
 		removeButton.addSelectionListener(widgetSelectedAdapter(e -> {
 			if (selectedEntry != null) {
@@ -138,8 +139,8 @@ public class XMLCatalogPreferencePage extends PreferencePage implements IWorkben
 				int result = (isDirty ? dialog.open() : IDialogConstants.OK_ID);
 				if (result == IDialogConstants.OK_ID) {
 					XMLCatalogPreferencePage.this.performOk();
-					if (getContainer() instanceof Window) {
-						((Window)getContainer()).close();
+					if (getContainer() instanceof Window window) {
+						window.close();
 					}
 					
 					try {
@@ -149,7 +150,7 @@ public class XMLCatalogPreferencePage extends PreferencePage implements IWorkben
 							"org.eclipse.ui.genericeditor.GenericEditor",
 							true);
 					} catch (PartInitException e1) {
-						Activator.getDefault().getLog().error(e1.getMessage(), e1);
+						ILog.get().error(e1.getMessage(), e1);
 					}
 				}
 			}
@@ -160,11 +161,10 @@ public class XMLCatalogPreferencePage extends PreferencePage implements IWorkben
 			editButton.setEnabled(!event.getSelection().isEmpty());
 			selectedEntry = null;
 			ISelection selection = event.getSelection();
-			if (selection instanceof ITreeSelection) {
-				ITreeSelection treeSelection = (ITreeSelection) selection;
+			if (selection instanceof ITreeSelection treeSelection) {
 				Object object = treeSelection.getFirstElement();
-				if (object instanceof File) {
-					selectedEntry = (File) object;
+				if (object instanceof File file) {
+					selectedEntry = file;
 				}
 			}
 		});
@@ -190,8 +190,8 @@ public class XMLCatalogPreferencePage extends PreferencePage implements IWorkben
 	class EntriesContentProvider implements ITreeContentProvider {
 		@Override
 		public Object[] getChildren(Object parentElement) {
-			if (parentElement instanceof Set) {
-				return ((Set) parentElement).toArray();
+			if (parentElement instanceof Set<?> set) {
+				return set.toArray();
 			}
 			return new Object[0];
 		}
@@ -227,7 +227,7 @@ public class XMLCatalogPreferencePage extends PreferencePage implements IWorkben
 			try (InputStream imageResource = getClass().getResourceAsStream("/icons/xmlEditorIcon.png")) {
 				image = new Image(Display.getDefault(), imageResource);
 			} catch (IOException e) {
-				Activator.getDefault().getLog().error(e.getMessage(), e);
+				ILog.get().error(e.getMessage(), e);
 			}
 		}
 		
@@ -238,8 +238,8 @@ public class XMLCatalogPreferencePage extends PreferencePage implements IWorkben
 
 		@Override
 		public String getText(Object element) {
-			if (element instanceof File) {
-				return ((File) element).getAbsolutePath();
+			if (element instanceof File file) {
+				return file.getAbsolutePath();
 			}
 			return super.getText(element);
 		}

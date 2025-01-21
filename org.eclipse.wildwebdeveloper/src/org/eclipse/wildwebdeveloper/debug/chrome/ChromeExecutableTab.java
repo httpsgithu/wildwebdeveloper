@@ -14,9 +14,9 @@ import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
@@ -38,8 +38,8 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.internal.browser.BrowserManager;
 import org.eclipse.ui.internal.browser.IBrowserDescriptor;
-import org.eclipse.wildwebdeveloper.Activator;
 import org.eclipse.wildwebdeveloper.debug.Messages;
+import org.eclipse.wildwebdeveloper.debug.node.VSCodeJSDebugDelegate;
 
 public class ChromeExecutableTab extends AbstractLaunchConfigurationTab {
 
@@ -51,7 +51,7 @@ public class ChromeExecutableTab extends AbstractLaunchConfigurationTab {
 		try (InputStream imageResource = getClass().getResourceAsStream("/icons/ChromeIcon.png")) {
 			image = new Image(Display.getDefault(), imageResource);
 		} catch (IOException e) {
-			Activator.getDefault().getLog().error(e.getMessage(), e);
+			ILog.get().error(e.getMessage(), e);
 		}
 	}
 
@@ -66,7 +66,7 @@ public class ChromeExecutableTab extends AbstractLaunchConfigurationTab {
 		browserToUse.setLabelProvider(new BrowserLabelProvider());
 		proposals = new LinkedList<>();
 		proposals.add(""); //$NON-NLS-1$
-		proposals.addAll(BrowserManager.getInstance().getWebBrowsers().stream().filter(ChromeExecutableTab::isChrome).collect(Collectors.toList()));
+		proposals.addAll(BrowserManager.getInstance().getWebBrowsers().stream().filter(ChromeExecutableTab::isChrome).toList());
 		browserToUse.setInput(proposals);
 		browserToUse.addPostSelectionChangedListener(e -> {
 			setDirty(true);
@@ -79,7 +79,7 @@ public class ChromeExecutableTab extends AbstractLaunchConfigurationTab {
 		link.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> {
 			Dialog dialog = PreferencesUtil.createPreferenceDialogOn(link.getShell(), "org.eclipse.ui.browser.preferencePage", null, null); //$NON-NLS-1$
 			dialog.open();
-			List<IBrowserDescriptor> previous = proposals.stream().filter(IBrowserDescriptor.class::isInstance).map(IBrowserDescriptor.class::cast).collect(Collectors.toList());
+			List<IBrowserDescriptor> previous = proposals.stream().filter(IBrowserDescriptor.class::isInstance).map(IBrowserDescriptor.class::cast).toList();
 			List<IBrowserDescriptor> next = BrowserManager.getInstance().getWebBrowsers();
 			List<IBrowserDescriptor> toRemove = new LinkedList<>(previous);
 			toRemove.removeAll(next);
@@ -101,7 +101,7 @@ public class ChromeExecutableTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.removeAttribute(ChromeRunDAPDebugDelegate.RUNTIME_EXECUTABLE);
+		configuration.removeAttribute(VSCodeJSDebugDelegate.RUNTIME_EXECUTABLE);
 	}
 
 
@@ -132,15 +132,15 @@ public class ChromeExecutableTab extends AbstractLaunchConfigurationTab {
 				}
 			}
 		} catch (CoreException ex) {
-			Activator.getDefault().getLog().log(ex.getStatus());
+			ILog.get().log(ex.getStatus());
 		}
 	}
 
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
 		Object selectedBrowser = ((IStructuredSelection)browserToUse.getSelection()).getFirstElement();
-		if (selectedBrowser instanceof IBrowserDescriptor) {
-			configuration.setAttribute(ChromeRunDAPDebugDelegate.RUNTIME_EXECUTABLE, ((IBrowserDescriptor)selectedBrowser).getLocation());
+		if (selectedBrowser instanceof IBrowserDescriptor desc) {
+			configuration.setAttribute(ChromeRunDAPDebugDelegate.RUNTIME_EXECUTABLE, desc.getLocation());
 		} else if (selectedBrowser instanceof String) {
 			configuration.setAttribute(ChromeRunDAPDebugDelegate.RUNTIME_EXECUTABLE, selectedBrowser);
 		}
@@ -167,8 +167,7 @@ public class ChromeExecutableTab extends AbstractLaunchConfigurationTab {
 	static class BrowserLabelProvider extends LabelProvider {
 		@Override
 		public String getText(Object element) {
-			if (element instanceof IBrowserDescriptor) {
-				IBrowserDescriptor browser = (IBrowserDescriptor)element;
+			if (element instanceof IBrowserDescriptor browser) {
 				return browser.getName();
 			}
 			if ("".equals(element)) {

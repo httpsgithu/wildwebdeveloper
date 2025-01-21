@@ -4,7 +4,20 @@
 
 #### Use Embedded Node.js?
 
-When a developer's system suits the supported OSs (Linux, MacOS and Win32) and architectures (x86_64) the embedded Node.js from Wild Web Developer will be used by WildWebDeveloper to run language Servers as well as for Node Debugger unless the `"org.eclipse.wildwebdeveloper.nodeJSLocation"` system property is set.
+When a developer's system suits the supported OSs (Linux, MacOS and Win32) and architectures (x86_64, aarch64) the embedded Node.js from Wild Web Developer will be used by WildWebDeveloper to run language Servers as well as for Node Debugger unless the `"org.eclipse.wildwebdeveloper.nodeJSLocation"` system property is set.
+
+The WildWebDeveloper project always aims to embed the latest LTS (Long Term Support) version of Node.js available for the download at [NodeJS.org](https://nodejs.org/en/download), however it's not always possible due to the needs of testing, fixing the issues found if any and the [IP Team  Due Diligence Process](https://gitlab.eclipse.org/eclipsefdn/emo-team/iplab/-/wikis/home) which may take quite a long time.
+
+However, due to different reasons, the projects may be in need of use either the latest available Node.js version, or a specific one, for example, because of their internal Due Diligence processes, or a custom version, for example, because of the company internal restriction rules on 3rd-party software installation and usage. In such cases, the users can force WWD to use such a specific Node.js version by adding the following property to their WWD `eclipse.ini` configuration file: 
+
+```
+-Dorg.eclipse.wildwebdeveloper.nodeJSLocation=<Path-to-Node.js-executable>  
+```
+
+This property will force WWD to use the specified Node.js installation instead of the embedded one.
+
+It's still recommended the use of LTS Node.js versions - as their functionality is tested in conjunction with WWD as well as they are supposed to be stable and secure. 
+
 
 #### Automatically compile TypeScript to JavaScript ?
 
@@ -72,8 +85,48 @@ Example `tsconfig.json`:
 3. Drag the editor/browser to get them side by side or stacked one on top of the other in the IDE.
 4. In the Web Browser, click the arrow besides the refresh button, and select "Auto-refersh local changes"
 
+### Change the memory allocated to the JavaScript/TypeScript language server?
+
+Add the following property to the WWD `eclipse.ini` configuration file:
+
+```
+-Dorg.eclipse.wildwebdeveloper.maxTsServerMemory=<memory in megabytes>
+```
+This will set the maximum size of V8's old memory section for the JavaScript/TypeScript language server. Values are in megabytes, for example `4096` means 4GB. The default value is dynamically configured by Node.js so can differ per system. Increase for very big projects that exceed allowed memory usage.
+
 ### As an Eclipse plugin developer, how can I...
 
 #### Reuse Embedded Node.js?
 
 Developers may [reuse the Node.js Embedder](https://github.com/eclipse/wildwebdeveloper/blob/master/org.eclipse.wildwebdeveloper.embedder.node/README.md) in their products.
+
+#### Attach a debugger to the XML Language Server process?
+
+Run Eclipse with the following JVM property, e.g. set in `eclipse.ini`:
+
+```text
+-vmargs
+...
+-Dorg.eclipse.wildwebdeveloper.xml.internal.XMLLanguageServer.debugPort=8001
+```
+
+Note this is a JVM property you set in the parent JVM (the Eclipse IDE) so that the (LemMinX) XML Language Server child process gets started, suspended, in debug mode, waiting for the debugger attachment.  You can set the property's value to a different port if you'd like to select a different port value (than 8001 in the example).
+
+#### Enable java.util.logging in the XML Language Server process?
+
+Run Eclipse with the following JVM property, e.g. set in `eclipse.ini`:
+
+```text
+-vmargs
+...
+-Dorg.eclipse.wildwebdeveloper.xml.internal.XMLLanguageServer.log.level=all
+```
+
+Note this is a JVM property you set in the parent JVM (the Eclipse IDE) to take effect within the (LemMinX) XML Language Server child process.
+
+The LemMinX process will use this property value as the "level" for its "root" Logger.   
+
+This workflow doesn't support the full set of **java.util.logging** function: handlers/formatters/etc.  The normal handler registration (e.g. **ConsoleHandler**) is disabled and in its place a handler is created which writes the log messages to the file:  `<workspace-root>/.metadata/lemminx.log`.  Currently this handler is coded to only log messages at Level.INFO or higher.
+
+ 
+

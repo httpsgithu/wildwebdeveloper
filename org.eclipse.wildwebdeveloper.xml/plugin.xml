@@ -8,40 +8,65 @@
             contentTypeId="org.eclipse.core.runtime.xml"
             editorId="org.eclipse.ui.genericeditor.GenericEditor">
       </editorContentTypeBinding>
+       <editorContentTypeBinding
+            contentTypeId="org.eclipse.wildwebdeveloper.rnc"
+            editorId="org.eclipse.ui.genericeditor.GenericEditor">
+      </editorContentTypeBinding>
    </extension>
 
    <extension
          point="org.eclipse.ui.genericeditor.presentationReconcilers">
       <presentationReconciler
             class="org.eclipse.tm4e.ui.text.TMPresentationReconciler"
-            contentType="org.eclipse.core.runtime.xml">
+            contentType="org.eclipse.wildwebdeveloper.rnc">
       </presentationReconciler>
    </extension>
 
+	<extension
+	      point="org.eclipse.ui.genericeditor.reconcilers">
+	   <reconciler
+	         class="org.eclipse.wildwebdeveloper.xml.internal.autoclose.XMLAutoCloseTagReconciler"
+	         contentType="org.eclipse.core.runtime.xml">
+	   </reconciler>
+	</extension>
 
    <!-- XML Language -->   
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type
-            base-type="org.eclipse.core.runtime.xml"
-            file-extensions="xsl"
+            base-type="org.eclipse.tm4e.language_pack.xsl"
             id="org.eclipse.wildwebdeveloper.xsl"
             name="XSL"
-            priority="normal">
+            priority="low">
       </content-type>
       <content-type
             base-type="org.eclipse.core.runtime.xml"
             file-extensions="xsd"
             id="org.eclipse.wildwebdeveloper.xsd"
             name="XSD"
-            priority="normal">
+            priority="low">
       </content-type>
       <content-type
             base-type="org.eclipse.core.runtime.xml"
             file-extensions="dtd"
             id="org.eclipse.wildwebdeveloper.dtd"
             name="DTD"
-            priority="normal">
+            priority="low">
+      </content-type>
+      <!-- RelaxNG -->
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="rng"
+            id="org.eclipse.wildwebdeveloper.rng"
+            name="RNG"
+            priority="low">
+      </content-type>
+      <content-type
+            base-type="org.eclipse.core.runtime.text"
+            file-extensions="rnc"
+            id="org.eclipse.wildwebdeveloper.rnc"
+            name="RNC"
+            priority="low">
       </content-type>
    </extension>
    
@@ -49,9 +74,10 @@
          point="org.eclipse.lsp4e.languageServer">
       <server
             class="org.eclipse.wildwebdeveloper.xml.internal.XMLLanguageServer"
+            serverInterface="org.eclipse.wildwebdeveloper.xml.internal.XMLLanguageServerAPI"
             clientImpl="org.eclipse.wildwebdeveloper.xml.internal.XmlLanguageClientImpl"
             id="org.eclipse.wildwebdeveloper.xml"
-            label="XML Language Server"
+            label="LemMinX"
             singleton="true">
       </server>
       <contentTypeMapping
@@ -70,45 +96,45 @@
             contentType="org.eclipse.wildwebdeveloper.dtd"
             id="org.eclipse.wildwebdeveloper.xml">
       </contentTypeMapping>
+      <contentTypeMapping
+            contentType="org.eclipse.wildwebdeveloper.rng"
+            id="org.eclipse.wildwebdeveloper.xml">
+      </contentTypeMapping>      
    </extension>
  
    <extension
          point="org.eclipse.tm4e.registry.grammars">
       <grammar
-            path="grammars/xml/xml.tmLanguage.json"
-            scopeName="source.xml">
+            path="grammars/dtd/dtd.tmLanguage.json"
+            scopeName="text.xml.dtd">
+      </grammar>
+            <grammar
+            path="grammars/rnc/rnc.tmLanguage.json"
+            scopeName="source.rnc">
       </grammar>
       <scopeNameContentTypeBinding
             contentTypeId="org.eclipse.core.runtime.xml"
-            scopeName="source.xml">
-      </scopeNameContentTypeBinding>
-      <grammar
-            path="grammars/xsl/xsl.tmLanguage.json"
-            scopeName="source.xml.xsl">
-      </grammar>
-      <scopeNameContentTypeBinding
-            contentTypeId="org.eclipse.wildwebdeveloper.xsl"
-            scopeName="source.xml.xsl">
+            scopeName="text.xml">
       </scopeNameContentTypeBinding>
       <scopeNameContentTypeBinding
             contentTypeId="org.eclipse.wildwebdeveloper.xsd"
-            scopeName="source.xml">
+            scopeName="text.xml">
       </scopeNameContentTypeBinding>
       <scopeNameContentTypeBinding
             contentTypeId="org.eclipse.wildwebdeveloper.dtd"
-            scopeName="source.xml">
+            scopeName="text.xml.dtd">
+      </scopeNameContentTypeBinding>
+      <scopeNameContentTypeBinding
+            contentTypeId="org.eclipse.wildwebdeveloper.rnc"
+            scopeName="source.rnc">
       </scopeNameContentTypeBinding>
    </extension>
    
    <extension
          point="org.eclipse.tm4e.languageconfiguration.languageConfigurations">
       <languageConfiguration
-            contentTypeId="org.eclipse.core.runtime.xml"
-            path="language-configurations/xml/xml.language-configuration.json">
-      </languageConfiguration>
-      <languageConfiguration
-            contentTypeId="org.eclipse.wildwebdeveloper.xsl"
-            path="language-configurations/xsl/xsl.language-configuration.json">
+            contentTypeId="org.eclipse.wildwebdeveloper.rnc"
+            path="language-configurations/rnc/rnc.language-configuration.json">
       </languageConfiguration>
    </extension>
    
@@ -117,13 +143,13 @@
       <snippet
             name="XML Sample"
             path="snippets/xml/sample.xml"
-            scopeName="source.xml">
+            scopeName="text.xml">
       </snippet>
    </extension>
    <extension
          point="org.eclipse.ui.genericeditor.icons">
       <icon
-            contentType="org.eclipse.wildwebdeveloper.xml"
+            contentType="org.eclipse.core.runtime.xml"
             icon="icons/xmlEditorIcon.png">
       </icon>
    </extension>
@@ -148,7 +174,14 @@
             id="org.eclipse.wildwebdeveloper.xml.internal.ui.preferences.XMLCodeLensPreferencePage"
             name="%XMLCodeLensPreferencePage.name">
             <keywordReference id="org.eclipse.wildwebdeveloper.xml.ui.xmlcodelens"/>
-         </page>         
+         </page>
+         <page
+            category="org.eclipse.wildwebdeveloper.xml.internal.ui.preferences.XMLPreferencePage"
+            class="org.eclipse.wildwebdeveloper.xml.internal.ui.preferences.XMLFormattingPreferencePage"
+            id="org.eclipse.wildwebdeveloper.xml.internal.ui.preferences.XMLLFormattingPreferencePage"
+            name="%XMLFormattingPreferencePage.name">
+            <keywordReference id="org.eclipse.wildwebdeveloper.xml.ui.xmlformatting"/>
+         </page>
          <page
             category="org.eclipse.wildwebdeveloper.xml.internal.ui.preferences.XMLPreferencePage"
             class="org.eclipse.wildwebdeveloper.xml.internal.ui.preferences.XMLValidationPreferencePage"
@@ -165,7 +198,10 @@
 			id="org.eclipse.wildwebdeveloper.xml.ui.xmlcatalogs"/>
 		<keyword
 			label="%XMLCodeLensPreferencesPage.preferenceKeywords.xmlcodelens"
-			id="org.eclipse.wildwebdeveloper.xml.ui.xmlcodelens"/>			
+			id="org.eclipse.wildwebdeveloper.xml.ui.xmlcodelens"/>
+		<keyword
+			label="%XMLCodeLensPreferencesPage.preferenceKeywords.xmlformatting"
+			id="org.eclipse.wildwebdeveloper.xml.ui.xmlformatting"/>
 		<keyword
 			label="%XMLValidationPreferencesPage.preferenceKeywords.xmlvalidation"
 			id="org.eclipse.wildwebdeveloper.xml.ui.xmlvalidation"/>			
@@ -176,5 +212,13 @@
          <initializer
             class="org.eclipse.wildwebdeveloper.xml.internal.ui.preferences.XMLPreferenceInitializer">
         </initializer>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.wildwebdeveloper.xml.internal.commands.AssociateGrammarHandler"
+            commandId="xml.open.binding.wizard">                        
+      </handler>      
    </extension>
 </plugin>

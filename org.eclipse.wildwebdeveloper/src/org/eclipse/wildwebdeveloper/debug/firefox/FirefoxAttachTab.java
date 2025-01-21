@@ -20,9 +20,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Link;
+import org.eclipse.wildwebdeveloper.debug.LaunchConstants;
 import org.eclipse.wildwebdeveloper.debug.Messages;
 import org.eclipse.wildwebdeveloper.debug.node.AttachTab;
-import org.eclipse.wildwebdeveloper.debug.node.NodeAttachDebugDelegate;
 
 class FirefoxAttachTab extends AttachTab {
 	
@@ -34,13 +34,11 @@ class FirefoxAttachTab extends AttachTab {
 	public void createControl(Composite parent) {
 		super.createControl(parent);
 		Control control = getControl();
-		if (control instanceof Composite) {
-			Composite composite = (Composite)control;
+		if (control instanceof Composite composite) {
 			Link label = new Link(composite, SWT.WRAP);
 			label.setText(Messages.firefoxAttachNote);
 			Layout layout = composite.getLayout();
-			if (layout instanceof GridLayout) {
-				GridLayout gridLayout = (GridLayout)layout;
+			if (layout instanceof GridLayout gridLayout) {
 				GridDataFactory.swtDefaults()
 					.align(SWT.BEGINNING, SWT.TOP)
 					.grab(true, false)
@@ -54,6 +52,6 @@ class FirefoxAttachTab extends AttachTab {
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
 		super.setDefaults(configuration);
-		configuration.setAttribute(NodeAttachDebugDelegate.PORT, 6000);
+		configuration.setAttribute(LaunchConstants.PORT, 6000);
 	}
 }

@@ -14,7 +14,6 @@ package org.eclipse.wildwebdeveloper.tests;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 
 import org.eclipse.core.resources.IFile;
@@ -35,30 +34,27 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(AllCleanRule.class)
 public class TestSyntaxHighlighting {
 
-	private IProject project;
+    private IProject project;
 
-	@BeforeEach
-	public void initializeHostProject() throws CoreException {
-		project = ResourcesPlugin.getWorkspace().getRoot().getProject("blah");
-		project.create(null);
-		project.open(null);
-	}
+    @BeforeEach
+    public void initializeHostProject() throws CoreException {
+        project = ResourcesPlugin.getWorkspace().getRoot().getProject("blah");
+        project.create(null);
+        project.open(null);
+    }
 
-	@Test
-	public void testJSXHighlighting() throws CoreException {
-		IFile file = project.getFile("test.jsx");
-		file.create(new ByteArrayInputStream("var n = 4;\n".getBytes()), true, null);
-		ITextEditor editor = (ITextEditor) IDE
-				.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(), file);
-		StyledText widget = (StyledText) editor.getAdapter(Control.class);
-		Color defaultTextColor = widget.getForeground();
-		assertTrue(new DisplayHelper() {
-			@Override
-			protected boolean condition() {
-				return Arrays.stream(widget.getStyleRanges())
-						.anyMatch(range -> range.foreground != null && !defaultTextColor.equals(range.foreground));
-			}
-		}.waitForCondition(widget.getDisplay(), 2000), "Missing syntax highlighting");
-	}
+    @Test
+    public void testJSXHighlighting() throws CoreException {
+        IFile file = project.getFile("test.jsx");
+        file.create("var n = 4;\n".getBytes(), true, false, null);
+        ITextEditor editor = (ITextEditor) IDE
+                .openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(), file);
+        StyledText widget = (StyledText) editor.getAdapter(Control.class);
+        Color defaultTextColor = widget.getForeground();
+        assertTrue(
+                DisplayHelper.waitForCondition(widget.getDisplay(), 5000, () -> Arrays.stream(widget.getStyleRanges())
+                        .anyMatch(range -> range.foreground != null && !defaultTextColor.equals(range.foreground))),
+                "Missing syntax highlighting");
+    }
 
 }

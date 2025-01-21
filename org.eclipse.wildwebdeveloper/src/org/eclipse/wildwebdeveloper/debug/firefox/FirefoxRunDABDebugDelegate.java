@@ -20,13 +20,14 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -36,6 +37,7 @@ import org.eclipse.ui.internal.browser.BrowserManager;
 import org.eclipse.ui.internal.browser.IBrowserDescriptor;
 import org.eclipse.wildwebdeveloper.Activator;
 import org.eclipse.wildwebdeveloper.debug.AbstractHTMLDebugDelegate;
+import org.eclipse.wildwebdeveloper.debug.LaunchConstants;
 import org.eclipse.wildwebdeveloper.debug.MessageUtils;
 import org.eclipse.wildwebdeveloper.debug.Messages;
 import org.eclipse.wildwebdeveloper.debug.chrome.ChromeRunDAPDebugDelegate;
@@ -77,10 +79,8 @@ public class FirefoxRunDABDebugDelegate extends AbstractHTMLDebugDelegate {
 		String url = configuration.getAttribute(ChromeRunDAPDebugDelegate.URL, "");
 		if (!url.isEmpty()) {
 			param.put(ChromeRunDAPDebugDelegate.URL, url);
-			File projectDirectory = new File(configuration.getAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, ""));
-			param.put("webRoot", projectDirectory.getAbsolutePath());
 		} else {
-			param.put(FILE, configuration.getAttribute(AbstractHTMLDebugDelegate.PROGRAM, "No program path set").trim()); //$NON-NLS-1$
+			param.put(FILE, VariablesPlugin.getDefault().getStringVariableManager().performStringSubstitution(configuration.getAttribute(LaunchConstants.PROGRAM, "No program path set").trim())); //$NON-NLS-1$
 		}
 		param.put(PREFERENCES, "{}"); //$NON-NLS-1$
 		param.put(TMP_DIRS, System.getProperty("java.io.tmpdir")); //$NON-NLS-1$
@@ -101,8 +101,8 @@ public class FirefoxRunDABDebugDelegate extends AbstractHTMLDebugDelegate {
 					.getResource("/node_modules/firefox-debugadapter/adapter.bundle.js"));
 			return new File(fileURL.toURI());
 		} catch (IOException | URISyntaxException e) {
-			IStatus errorStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(), e);
-			Activator.getDefault().getLog().log(errorStatus);
+			IStatus errorStatus = Status.error(e.getMessage(), e);
+			ILog.get().log(errorStatus);
 			Display.getDefault().asyncExec(() -> ErrorDialog.openError(Display.getDefault().getActiveShell(),
 					"Debug error", e.getMessage(), errorStatus)); //$NON-NLS-1$
 		}
@@ -118,7 +118,7 @@ public class FirefoxRunDABDebugDelegate extends AbstractHTMLDebugDelegate {
 	
 	@SuppressWarnings("restriction")
 	static String findFirefoxLocation(ILaunchConfiguration configuration) {
-		List<IBrowserDescriptor> runtimes = BrowserManager.getInstance().getWebBrowsers().stream().filter(FirefoxRunDABDebugDelegate::isFirefox).collect(Collectors.toList());
+		List<IBrowserDescriptor> runtimes = BrowserManager.getInstance().getWebBrowsers().stream().filter(FirefoxRunDABDebugDelegate::isFirefox).toList();
 		for (IBrowserDescriptor browser : runtimes) {
 			if (browser.getLocation() != null) {
 				String location = browser.getLocation();

@@ -5,12 +5,6 @@ import java.util.Map;
 import org.eclipse.lsp4e.LanguageClientImpl;
 import org.eclipse.lsp4j.MessageParams;
 import org.eclipse.lsp4j.MessageType;
-import org.eclipse.lsp4j.ProgressParams;
-import org.eclipse.lsp4j.WorkDoneProgressNotification;
-import org.eclipse.lsp4j.WorkDoneProgressReport;
-import org.eclipse.lsp4j.jsonrpc.messages.Either;
-
-import com.google.gson.JsonObject;
 
 public class AngularClientImpl extends LanguageClientImpl implements AngularLanguageServerExtention {
 
@@ -44,22 +38,7 @@ public class AngularClientImpl extends LanguageClientImpl implements AngularLang
 	}
 	
 	@Override
-	public void notifyProgress(ProgressParams params) {
-		String message = null;
-		Either<WorkDoneProgressNotification, Object> either = params.getValue();
-		if (either.isLeft()) {
-			if (either.getLeft() instanceof WorkDoneProgressReport)
-				message = ((WorkDoneProgressReport) either.getLeft()).getMessage();
-		}
-		else if (either.getRight() instanceof JsonObject)
-		{
-			JsonObject json = (JsonObject) either.getRight();
-			if (json.has("message")) {
-				message = json.get("message").getAsString();
-			}
-		}
-		if (message != null) {
-			logMessage(new MessageParams(MessageType.Info, params.getToken().getLeft()  + ": " + (message == null? "done":message)));
-		}
+	public void ngccProgressEnd(Object o) {
+		logMessage(new MessageParams(MessageType.Info, o.toString()));
 	}
 }
